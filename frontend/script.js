@@ -1,4 +1,5 @@
-const API_URL = 'https://hr-summary-app-50.vercel.app/api/generate'; // Update to your deployed function URL
+const API_URL = 'https://hr-summary-app-50.vercel.app/api/generate';
+const API_URL = 'https://hr-summary-app-50-2vsporru4-anantshree2003-1790s-projects.vercel.app/';// Update to your deployed function URL
 
 const btn = document.getElementById('generateBtn');
 const outputEl = document.getElementById('outputText');
@@ -34,6 +35,7 @@ btn.onclick = async () => {
     btn.textContent = 'Generate Summary';
   }
 };
+
 
 
 
