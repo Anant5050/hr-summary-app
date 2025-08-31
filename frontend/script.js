@@ -4,6 +4,19 @@ btn.onclick = async () => {
   if (!input) return alert('Please enter incident details.');
   btn.disabled = true;
   btn.textContent = 'Generating...';
+  // frontend/script.js
+const API_URL = 'https://hr-summary-app.vercel.app/api/generate';
+
+btn.onclick = async () => {
+  // …
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: input })
+  });
+  // …
+};
+
 
   try {
     const res = await fetch('/api/generate', {
@@ -31,3 +44,4 @@ btn.onclick = async () => {
     btn.textContent = 'Generate Summary';
   }
 };
+
