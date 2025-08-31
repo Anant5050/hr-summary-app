@@ -2,30 +2,21 @@ import 'dotenv/config';
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
-  const { text } = req.body;
-  if (!text) return res.status(400).json({ error: 'No text provided' });
+  try {
+    // Allow CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Call OpenAI (or similar)
-  const apiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: 'You are an expert human rights researcher.' },
-        { role: 'user', content:
-          `Summarize the following incident as a concise human rights violation summary:\n\n${text}`
-        }
-      ],
-      temperature: 0.7
-    })
-  });
+    // Handle preflight requests
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
+    }
 
-  const data = await apiRes.json();
-  const summary = data.choices?.[0]?.message?.content || 'No summary generated';
-  res.status(200).json({ summary });
-}
+    if (req.method !== 'POST') {
+      res.setHeader('Allow', 'POST, OPTIONS');
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { text } = req.body;
+    if (!text || typeof text !== 'string' ||
