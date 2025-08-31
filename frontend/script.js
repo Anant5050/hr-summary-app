@@ -11,10 +11,21 @@ btn.onclick = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: input })
     });
-    const { summary } = await res.json();
-    document.getElementById('outputText').textContent = summary;
+
+    const json = await res.json();
+    if (!res.ok) {
+      // Display error details
+      console.error('API error details:', json);
+      document.getElementById('outputText').textContent =
+        `Error: ${json.error || 'Unknown error'}` +
+        (json.details ? `\nDetails: ${json.details}` : '');
+    } else {
+      document.getElementById('outputText').textContent = json.summary;
+    }
   } catch (err) {
-    document.getElementById('outputText').textContent = 'Error generating summary.';
+    console.error('Fetch error:', err);
+    document.getElementById('outputText').textContent =
+      `Network or CORS error: ${err.message}`;
   } finally {
     btn.disabled = false;
     btn.textContent = 'Generate Summary';
