@@ -1,25 +1,18 @@
+const API_URL = 'https://hr-summary-app.vercel.app/api/generate'; // Update to your deployed function URL
+
 const btn = document.getElementById('generateBtn');
+const outputEl = document.getElementById('outputText');
+
 btn.onclick = async () => {
   const input = document.getElementById('inputText').value.trim();
   if (!input) return alert('Please enter incident details.');
+
   btn.disabled = true;
   btn.textContent = 'Generating...';
-  // frontend/script.js
-const API_URL = 'https://hr-summary-app.vercel.app/api/generate';
-
-btn.onclick = async () => {
-  // …
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: input })
-  });
-  // …
-};
-
+  outputEl.textContent = '';
 
   try {
-    const res = await fetch('/api/generate', {
+    const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: input })
@@ -27,21 +20,17 @@ btn.onclick = async () => {
 
     const json = await res.json();
     if (!res.ok) {
-      // Display error details
       console.error('API error details:', json);
-      document.getElementById('outputText').textContent =
-        `Error: ${json.error || 'Unknown error'}` +
+      outputEl.textContent = `Error: ${json.error || 'Unknown error'}` +
         (json.details ? `\nDetails: ${json.details}` : '');
     } else {
-      document.getElementById('outputText').textContent = json.summary;
+      outputEl.textContent = json.summary;
     }
   } catch (err) {
     console.error('Fetch error:', err);
-    document.getElementById('outputText').textContent =
-      `Network or CORS error: ${err.message}`;
+    outputEl.textContent = `Network or CORS error: ${err.message}`;
   } finally {
     btn.disabled = false;
     btn.textContent = 'Generate Summary';
   }
 };
-
